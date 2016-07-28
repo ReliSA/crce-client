@@ -1,32 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>cz.zcu.aswi.testapp</groupId>
-    <artifactId>TestApp</artifactId>
+    <groupId>cz.zcu.kiv.crce</groupId>
+    <artifactId>client-example</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+
+    <name>CRCE Client Libs Example</name>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <coreLibPath>/home/spacelight/repos/aswi2016kukurice/TestApp</coreLibPath>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>relisa-jacc</id>
+            <name>ReliSA JaCC Releases</name>
+            <url>http://relisa-dev.kiv.zcu.cz/nexus/content/repositories/jacc-releases/</url>
+        </repository>
+        <repository>
+            <id>relisa-global</id>
+            <name>ReliSA Global Proxy repository</name>
+            <url>http://relisa-dev.kiv.zcu.cz:8081/nexus/content/groups/public</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
-            <groupId>cz.zcu.aswi.componentrepo</groupId>
-            <artifactId>CoreLibrary</artifactId>
+            <groupId>cz.zcu.kiv.crce</groupId>
+            <artifactId>client-base</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>cz.zcu.aswi.extendedlibrary</groupId>
-            <artifactId>ExtendedLibrary</artifactId>
+            <groupId>cz.zcu.kiv.crce</groupId>
+            <artifactId>clien-maven</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>cz.zcu.kiv.jacc</groupId>
             <artifactId>javatypes</artifactId>
             <version>1.0.8</version>
-            <type>jar</type>
         </dependency>
     </dependencies>
+
     <build>
       <plugins>
           <plugin>
