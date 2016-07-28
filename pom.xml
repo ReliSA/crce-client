@@ -16,10 +16,10 @@
     </properties>
 
     <modules>
-        <module>client-lib</module>
-        <module>maven-lib</module>
+        <module>client-base</module>
+        <module>client-java</module>
 
-        <module>examples/TestApp</module>
+        <module>examples/client-example</module>
     </modules>
 
     <repositories>
