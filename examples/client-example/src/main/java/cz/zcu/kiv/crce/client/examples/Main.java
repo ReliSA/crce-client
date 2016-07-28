@@ -1,4 +1,4 @@
-package cz.zcu.aswi.testapp;
+package cz.zcu.kiv.crce.client.examples;
 
 import cz.zcu.kiv.crce.client.base.Constants;
 import cz.zcu.kiv.crce.client.base.CrceClient;
