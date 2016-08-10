@@ -5,24 +5,20 @@
  */
 package cz.zcu.kiv.crce.client.java;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+
+import cz.zcu.kiv.jacc.javatypes.JPackage;
+
 import cz.zcu.kiv.crce.client.base.Constants;
 import cz.zcu.kiv.crce.client.base.CrceClient;
 import cz.zcu.kiv.crce.client.base.CrceClientJersey;
+import cz.zcu.kiv.crce.client.base.metadata.AttributeVO;
 import cz.zcu.kiv.crce.client.base.metadata.GenericRequirementVO;
-import cz.zcu.kiv.crce.client.base.metadata.Requirements;
 import cz.zcu.kiv.crce.client.base.metadata.Resources;
-import cz.zcu.kiv.jacc.javatypes.JClass;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Set;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
 
 /**
  *
@@ -31,6 +27,7 @@ import javax.ws.rs.core.Response;
 public class CrceJavaClientJersey implements CrceJavaClient {
 
     private CrceClient crceClient;
+    private JavaMetadataParser metadataParser;
     
     /**
      * This method creates new instance of CoreLibraryImpl
@@ -38,6 +35,7 @@ public class CrceJavaClientJersey implements CrceJavaClient {
      */
     public CrceJavaClientJersey(String apiURI) {
         crceClient = new CrceClientJersey(apiURI);
+        this.metadataParser = new RecursiveJavaMetadataParser();
     }
     
     /**
@@ -60,29 +58,35 @@ public class CrceJavaClientJersey implements CrceJavaClient {
     
     /**
      * This method connect to server at uri and downloads requirements
-     * @param classes (Set<JClass>)
+     * @param packages (Set<JClass>)
      * @return
      * @throws IOException
      */
     @Override
-    public Resources makeRequest(Set<JClass> classes) throws IOException {
-        JavaMetadataParser parser = new RecursiveJavaMetadataParser();
-        Set<GenericRequirementVO> requirements = parser.parse(classes);
-        Requirements reqs = new Requirements();
-        reqs.setRequirements(new ArrayList<>(requirements));
-        
-        Client c = ClientBuilder.newClient();
-        WebTarget t  = c.target(getServerURI());
-        t = t.path(Constants.METADATA_DIR).path(Constants.CATALOGUE_DIR).path("/");
-        Invocation.Builder ib = t.request();
-        Response response = ib.post(Entity.xml(reqs.getRequirements().get(0)));
-        
-        int status = response.getStatus();
-        if(status != 200){
-            throw new IOException("server returned status: " + status);
-        }
-        
-        return response.readEntity(Resources.class);
+    public Resources makeRequest(Set<JPackage> packages) throws IOException {
+        Set<GenericRequirementVO> requirements = metadataParser.parse(packages);
+
+        return crceClient.filteredListMetadata(requirements);
+    }
+
+    @Override
+    public Resources makeRequest(String groupId, String artifactId, String version) throws IOException {
+        String externalId = buildCrceExternalId(groupId, artifactId);
+        return crceClient.filteredListMetadata(externalId, version);
+    }
+
+    @Override
+    public Resources makeRequest(String groupId, String artifactId, Set<JPackage> packages) throws IOException {
+        String externalId = buildCrceExternalId(groupId, artifactId);
+        GenericRequirementVO identityReq = new GenericRequirementVO();
+        identityReq.setNamespace(Constants.NAMESPACE__CRCE_IDENTITY);
+        AttributeVO at = new AttributeVO(Constants.ATTRIBUTE__EXTERNAL_ID, externalId);
+        identityReq.getAttributes().add(at);
+
+        Set<GenericRequirementVO> reqs = metadataParser.parse(packages);
+        reqs.add(identityReq);
+
+        return crceClient.filteredListMetadata(reqs);
     }
 
     /**
@@ -113,6 +117,16 @@ public class CrceJavaClientJersey implements CrceJavaClient {
             }
         } else {
             throw new IOException("The input file doesn't exist.");
+        }
+    }
+
+    private String buildCrceExternalId(String groupId, String artifactId) {
+        if(groupId == null) {
+            return artifactId;
+        } else if (artifactId == null) {
+            return groupId;
+        } else {
+            return StringUtils.join(groupId, ".", artifactId);
         }
     }
     

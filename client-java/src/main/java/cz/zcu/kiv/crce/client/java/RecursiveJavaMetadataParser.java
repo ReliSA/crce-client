@@ -1,6 +1,5 @@
 package cz.zcu.kiv.crce.client.java;
 
-import cz.zcu.kiv.crce.client.base.Constants;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -13,8 +12,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import cz.zcu.kiv.jacc.javatypes.JClass;
 import cz.zcu.kiv.jacc.javatypes.JField;
 import cz.zcu.kiv.jacc.javatypes.JMethod;
+import cz.zcu.kiv.jacc.javatypes.JPackage;
 import cz.zcu.kiv.jacc.javatypes.JType;
 
+import cz.zcu.kiv.crce.client.base.Constants;
 import cz.zcu.kiv.crce.client.base.metadata.AttributeVO;
 import cz.zcu.kiv.crce.client.base.metadata.GenericRequirementVO;
 
@@ -30,30 +31,30 @@ import cz.zcu.kiv.crce.client.base.metadata.GenericRequirementVO;
 @ParametersAreNonnullByDefault
 public class RecursiveJavaMetadataParser implements JavaMetadataParser {
 
-    //private MetadataFactory metadataFactory;   //DI
-
     @Override
-    public Set<GenericRequirementVO> parse(Set<JClass> classes) {
+    public Set<GenericRequirementVO> parse(Set<JPackage> toParse) {
         Map<String, GenericRequirementVO> packages = new HashMap<>();
 
         String pckgName;
         GenericRequirementVO pckg;
-        for (JClass jClass : classes) {
-            pckgName = jClass.getPackage().getName();
+        for (JPackage jPackage : toParse) {
+            pckgName = jPackage.getName();
             pckg = packages.get(pckgName);
             if(pckg == null) {
                 pckg = createPackage(pckgName);
                 packages.put(pckgName, pckg);
             }
 
-            pckg.getChildren().add(parseClass(jClass));
+            for (JClass jClass : jPackage.getJClasses()) {
+                pckg.getChildren().add(parseClass(jClass));
+            }
         }
 
         return new HashSet<>(packages.values());
     }
 
     @Override
-    public Set<JClass> map(Set<GenericRequirementVO> requirements) {
+    public Set<JPackage> map(Set<GenericRequirementVO> requirements) {
         throw new UnsupportedOperationException("Not supported yet!");
     }
 

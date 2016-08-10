@@ -5,10 +5,12 @@
  */
 package cz.zcu.kiv.crce.client.java;
 
-import cz.zcu.kiv.crce.client.base.metadata.Resources;
-import cz.zcu.kiv.jacc.javatypes.JClass;
 import java.io.IOException;
 import java.util.Set;
+
+import cz.zcu.kiv.jacc.javatypes.JPackage;
+
+import cz.zcu.kiv.crce.client.base.metadata.Resources;
 
 /**
  *
@@ -29,12 +31,35 @@ public interface CrceJavaClient {
     String getServerURI();
     
     /**
-     * This method connect to server at uri and downloads requirements
-     * @param classes (Set<JClass>)
+     * This method connects to the server at uri and downloads resources based on the given requirements
+     * @param packages set of JPackage instances representing the requirements which returned resources must provide
      * @return
      * @throws IOException
      */
-    Resources makeRequest(Set<JClass> classes) throws IOException;
+    Resources makeRequest(Set<JPackage> packages) throws IOException;
+
+    /**
+     * This method connects to the server at uri and downloads resources based on the given requirements
+     * @param groupId wanted groupId
+     * @param artifactId wanted artifactId
+     * @param @version wanted version
+     * @return
+     * @throws IOException
+     */
+    Resources makeRequest(String groupId, String artifactId, String version) throws IOException;
+
+    /**
+     * This method connects to the server at uri and downloads resources based on the given requirements.
+     *
+     * Searches only within the given groupId-artifactId space.
+     *
+     * @param groupId wanted groupId
+     * @param artifactId wanted artifactId
+     * @param packages set of JPackage instances representing the requirements which returned resources must provide
+     * @return
+     * @throws IOException
+     */
+    Resources makeRequest(String groupId, String artifactId, Set<JPackage> packages) throws IOException;
  
     /**
      * This method check the input value for library content and uploads it on server

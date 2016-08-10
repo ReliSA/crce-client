@@ -4,7 +4,7 @@ import java.util.Set;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import cz.zcu.kiv.jacc.javatypes.JClass;
+import cz.zcu.kiv.jacc.javatypes.JPackage;
 
 import cz.zcu.kiv.crce.client.base.metadata.GenericRequirementVO;
 
@@ -24,13 +24,13 @@ public interface JavaMetadataParser {
      * @param classes set of classes to be parsed
      * @return respective requirements
      */
-    Set<GenericRequirementVO> parse(Set<JClass> classes);
+    Set<GenericRequirementVO> parse(Set<JPackage> classes);
 
     /**s
      * .The mirror operation to the #parse method.
      * @param requirements set of capabilities representing classes to be mapped
      * @return respective JClass instances
      */
-    Set<JClass> map(Set<GenericRequirementVO> requirements);
+    Set<JPackage> map(Set<GenericRequirementVO> requirements);
 
 }
