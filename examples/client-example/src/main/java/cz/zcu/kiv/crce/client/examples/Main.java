@@ -1,5 +1,17 @@
 package cz.zcu.kiv.crce.client.examples;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import cz.zcu.kiv.jacc.javatypes.JClass;
+import cz.zcu.kiv.jacc.javatypes.impl.JClassImpl;
+import cz.zcu.kiv.jacc.javatypes.impl.JMethodImpl;
+import cz.zcu.kiv.jacc.javatypes.impl.JPackageImpl;
+import cz.zcu.kiv.jacc.javatypes.impl.JTypeVariableImpl;
+
 import cz.zcu.kiv.crce.client.base.Constants;
 import cz.zcu.kiv.crce.client.base.CrceClient;
 import cz.zcu.kiv.crce.client.base.CrceClientJersey;
@@ -9,16 +21,6 @@ import cz.zcu.kiv.crce.client.base.metadata.ResourceVO;
 import cz.zcu.kiv.crce.client.base.metadata.Resources;
 import cz.zcu.kiv.crce.client.java.CrceJavaClient;
 import cz.zcu.kiv.crce.client.java.CrceJavaClientJersey;
-import cz.zcu.kiv.jacc.javatypes.JClass;
-import cz.zcu.kiv.jacc.javatypes.impl.JClassImpl;
-import cz.zcu.kiv.jacc.javatypes.impl.JMethodImpl;
-import cz.zcu.kiv.jacc.javatypes.impl.JPackageImpl;
-import cz.zcu.kiv.jacc.javatypes.impl.JTypeVariableImpl;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -54,20 +56,14 @@ public class Main {
         myAssert(id.equals(listAllMetadata.getResources().get(0).getId()));
         
         cl.setServerURI(MOCK_URI);
-        
-        Resources filteredListBundles = cl.filteredListBundles(EXTERNAL_ID,VERSION);
-        Resources filteredListMetadata = cl.filteredListMetadata(EXTERNAL_ID,VERSION);
-        
-        myAssert(filteredListBundles.getResources().get(0).getCapabilities().get(0).getId().equals(
-                filteredListMetadata.getResources().get(0).getCapabilities().get(0).getId()));
-        
+
         cl.setServerURI(RELISA_URI);
         
         ResourceVO metadataForBundle = cl.getMetadataForBundle(id);
         myAssert(metadataForBundle.getCapabilities().size() > 0);
         
         
-        CapabilityVO cap = new CapabilityVO();
+        CapabilityVO cap;
         cap = listAllBundles.getResources().get(0).getCapabilities().get(0);
         if (cap.getNamespace().equals(Constants.NAMESPACE__CRCE_IDENTITY)) {
         	IdentityCapabilityVO idCap = new IdentityCapabilityVO(cap);
@@ -109,7 +105,7 @@ public class Main {
         method.setReturnType(new JTypeVariableImpl("void", null));
         clazz.getDeclaredMethods().add(method);
 
-        Resources resources = el.makeRequest(new HashSet<>(classes));
+        Resources resources = el.makeRequest(Collections.singleton(pack));
         IdentityCapabilityVO iden = resources.getResources().get(0).getIdentityCapability();
         
         assert iden.getExternalId().equals(EXTERNAL_ID);
