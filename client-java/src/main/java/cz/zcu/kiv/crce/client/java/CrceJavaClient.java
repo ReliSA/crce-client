@@ -6,6 +6,7 @@
 package cz.zcu.kiv.crce.client.java;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Set;
 
 import cz.zcu.kiv.jacc.javatypes.JPackage;
@@ -67,5 +68,12 @@ public interface CrceJavaClient {
      * @throws IOException
      */
     void uploadLibrary(String filePath) throws IOException;
+
+    /**
+     * Download artifact from CRCE with the given ID.
+     * @param id  id of the wanted artifact in CRCE
+     * @param stream output stream to write the file data into
+     */
+    void downloadArtifact(String id, OutputStream stream);
     
 }

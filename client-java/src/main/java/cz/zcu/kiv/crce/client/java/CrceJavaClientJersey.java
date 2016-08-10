@@ -7,6 +7,7 @@ package cz.zcu.kiv.crce.client.java;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -118,6 +119,11 @@ public class CrceJavaClientJersey implements CrceJavaClient {
         } else {
             throw new IOException("The input file doesn't exist.");
         }
+    }
+
+    @Override
+    public void downloadArtifact(String id, OutputStream stream) {
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     private String buildCrceExternalId(String groupId, String artifactId) {

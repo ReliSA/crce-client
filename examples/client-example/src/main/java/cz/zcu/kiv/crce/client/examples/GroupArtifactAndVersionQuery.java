@@ -1,6 +1,8 @@
 package cz.zcu.kiv.crce.client.examples;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import cz.zcu.kiv.crce.client.base.metadata.ResourceVO;
 import cz.zcu.kiv.crce.client.base.metadata.Resources;
@@ -32,6 +34,11 @@ public class GroupArtifactAndVersionQuery {
                 System.out.println(externalId);
                 System.out.println(version);
                 System.out.println(id);
+
+                //this attempt to name the file is rather naive, proper filetype needs to be retrieved from identity capability
+                try (OutputStream stream = new FileOutputStream("/tmp/" + res.getIdentityCapability().getExternalId() + ".jar")) {
+                    client.downloadArtifact(id, stream);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
