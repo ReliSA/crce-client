@@ -6,6 +6,9 @@
 package cz.zcu.kiv.crce.client.base;
 
 import java.io.IOException;
+import java.util.Collection;
+
+import cz.zcu.kiv.crce.client.base.metadata.GenericRequirementVO;
 import cz.zcu.kiv.crce.client.base.metadata.ResourceVO;
 import cz.zcu.kiv.crce.client.base.metadata.Resources;
 
@@ -52,16 +55,7 @@ public interface CrceClient {
      * @throws java.io.IOException
      */
     void uploadResource(String filename) throws IOException;
-    
-    /**
-     * * This method connect to the server and return list of bundles filtered by externalId and version
-     * @param externalId
-     * @param version
-     * @return list of resources
-     * @throws java.io.IOException 
-     */
-    Resources filteredListBundles(String externalId, String version) throws IOException;
-    
+
     /**
      * * This method connect to the server and return list of metadata filtered by externalId and version
      * @param externalId
@@ -70,6 +64,13 @@ public interface CrceClient {
      * @throws java.io.IOException 
      */
     Resources filteredListMetadata(String externalId, String version) throws IOException;
+
+    /**
+     * * This method connect to the server and return list of metadata filtered by {@link cz.zcu.kiv.crce.client.base.metadata.Requirements}
+     * @return list of metadata
+     * @throws java.io.IOException
+     */
+    Resources filteredListMetadata(Collection<GenericRequirementVO> requirements) throws IOException;
     
     /**
      * This method connect to the server and return list of all metadata

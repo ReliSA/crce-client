@@ -5,6 +5,8 @@
  */
 package cz.zcu.kiv.crce.client.base.metadata;
 
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -23,18 +25,16 @@ public class Requirements {
     @XmlElement(name="requirement")
     private List<GenericRequirementVO> requirements;
 
-    /**
-     * @return the resources
-     */
-    //@Nonnull
-    //@XmlElementRef
+    public Requirements() {
+    }
+
+    public Requirements(Collection<GenericRequirementVO> requirements) {
+        this.requirements = new LinkedList<>(requirements);
+    }
     public List<GenericRequirementVO> getRequirements() {
         return requirements;
     }
 
-    /**
-     * @param resources the resources to set
-     */
     public void setRequirements(List<GenericRequirementVO> requirements) {
         this.requirements = requirements;
     }

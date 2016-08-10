@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Collection;
 import java.util.List;
 
 import javax.ws.rs.client.Client;
@@ -23,6 +24,8 @@ import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
+import cz.zcu.kiv.crce.client.base.metadata.GenericRequirementVO;
+import cz.zcu.kiv.crce.client.base.metadata.Requirements;
 import cz.zcu.kiv.crce.client.base.metadata.ResourceVO;
 import cz.zcu.kiv.crce.client.base.metadata.Resources;
 
@@ -144,30 +147,6 @@ public class CrceClientJersey implements CrceClient {
     }
 
     /**
-     * This method connect to the server at URI and return list of bundles filtered by externalId and version
-     *
-     * @param externalId
-     * @param version
-     * @return list of resources
-     * @throws IOException
-     */
-    @Override
-    public Resources filteredListBundles(String externalId, String version) throws IOException {
-        WebTarget t = connect();
-        t = t.path(Constants.RESOURCES_DIR).path(Constants.CATALOGUE_DIR).path(externalId).path(version);
-        Invocation.Builder ib = t.request(MediaType.APPLICATION_XML_TYPE);
-        Response response = ib.get();
-
-        int status = response.getStatus();
-        if (status != 200) {
-            throw new IOException("server returned status: " + status);
-        }
-
-        return response.readEntity(Resources.class);
-    }
-
-
-    /**
      * This method connect to the server at URI and return list of metadata filtered by externalId and version
      * externalId = groupId.artefactId
      *
@@ -182,6 +161,21 @@ public class CrceClientJersey implements CrceClient {
         t = t.path(Constants.METADATA_DIR).path(Constants.CATALOGUE_DIR).path(externalId).path(version);
         Invocation.Builder ib = t.request(MediaType.APPLICATION_XML_TYPE);
         Response response = ib.get();
+
+        int status = response.getStatus();
+        if (status != 200) {
+            throw new IOException("server returned status: " + status);
+        }
+
+        return response.readEntity(Resources.class);
+    }
+
+    @Override
+    public Resources filteredListMetadata(Collection<GenericRequirementVO> requirements) throws IOException {
+        WebTarget t = connect();
+        t = t.path(Constants.METADATA_DIR).path(Constants.CATALOGUE_DIR);
+        Invocation.Builder ib = t.request(MediaType.APPLICATION_XML_TYPE);
+        Response response = ib.post(Entity.xml(new Requirements(requirements)));
 
         int status = response.getStatus();
         if (status != 200) {
