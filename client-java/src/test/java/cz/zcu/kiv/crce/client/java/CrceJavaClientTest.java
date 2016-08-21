@@ -5,8 +5,7 @@
  */
 package cz.zcu.kiv.crce.client.java;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -33,7 +32,7 @@ import cz.zcu.kiv.crce.client.base.metadata.Resources;
 @Ignore("Ignored by J. Danek, these are not unit tests, these are IT, need some work to pass")
 public class CrceJavaClientTest {
     
-    private static final String RELISA_URI = "http://danekja.org:8086/rest/v2";
+    private static final String RELISA_URI = "http://147.228.127.152:8080/rest/v2F";
     private static final String MOCK_URI = "http://private-anon-f2858d7f0-crceapi.apiary-mock.com";
     
     private CrceJavaClient el;
@@ -121,6 +120,18 @@ public class CrceJavaClientTest {
         assert iden.getExternalId().equals(EXTERNAL_ID);
         assert iden.getOriginalVersion().equals(VERSION);
     }
-    
+
+    @Test
+    public void testDownloadArtifact() throws IOException {
+        final String BUNDLE_ID = "6be68f5b-2af8-46c5-ac0c-8f7f0b59d8bf";
+        final String LOCAL_DIR = ".";
+        final OutputStream STREAM = new FileOutputStream(LOCAL_DIR + File.separator + "test.jar");
+
+        el.setServerURI(RELISA_URI);
+        el.downloadArtifact(BUNDLE_ID, STREAM);
+        File f = new File(LOCAL_DIR + File.separator + "test.jar");
+        assert(f.exists());
+        f.delete();
+    }
     
 }
